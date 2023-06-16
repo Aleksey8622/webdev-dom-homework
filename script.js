@@ -15,15 +15,21 @@ const currentDate = (data) => {
     let conclusion = `${day}.${month}.${year} ${hour}:${minuts}`;
     return conclusion;
 }
+// const data = new Date();
 
-button[2].addEventListener('click', () => {
-    if (inputName[0].value === '') {
+const disablingButton = () => {
+    if (inputName[0].value && inputComments[0].value) {
+        button[2].disabled = false;
+
+    } else {
         button[2].disabled = true;
     }
-    if (inputComments[0].value === '') {
-        button[2].disabled = true;
-    }
-})
+
+}
+disablingButton();
+
+
+
 
 button[2].addEventListener('click', () => {
 
@@ -60,4 +66,8 @@ button[2].addEventListener('click', () => {
   </ul>`
     inputName[0].value = '';
     inputComments[0].value = '';
+    button[2].disabled = true;
 })
+
+inputName[0].addEventListener('input', disablingButton);
+inputComments[0].addEventListener('input', disablingButton);
