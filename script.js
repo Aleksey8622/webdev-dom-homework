@@ -16,7 +16,6 @@ const currentDate = (data) => {
   let conclusion = `${day}.${month}.${year} ${hour}:${minuts}`;
   return conclusion;
 }
-// const data = new Date();
 
 const disablingButton = () => {
   if (inputName.value && inputComments.value) {
