@@ -1,9 +1,27 @@
 "use strict";
 const button = document.querySelector('.add-form-button');
+const buttonTwo = document.querySelector('.add-form-button-two');
 const list = document.querySelector('.comments');
 const inputName = document.querySelector('.add-form-name');
 const inputComments = document.querySelector('.add-form-text');
 
+const arrayOfComments = [
+  {
+    name: 'Глеб Фокин',
+    time: '12.02.22 12:18',
+    comment: 'Это будет первый комментарий на этой странице',
+    Likes: 3,
+    lover: false
+  },
+
+  {
+    name: 'Варвара Н.',
+    time: '13.02.22 19:22',
+    comment: 'Мне нравится как оформлена эта страница! ❤',
+    Likes: 75,
+    lover: false
+  }
+];
 const currentDate = (data) => {
 
   const months = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
@@ -16,7 +34,7 @@ const currentDate = (data) => {
   let conclusion = `${day}.${month}.${year} ${hour}:${minuts}`;
   return conclusion;
 }
-// const data = new Date();
+
 
 const disablingButton = () => {
   if (inputName.value && inputComments.value) {
@@ -27,8 +45,75 @@ const disablingButton = () => {
   }
 
 }
-disablingButton();
 
+const addingLikes = () => {
+
+  const buttonElemets = document.querySelectorAll('.like-button');
+
+  for (const buttonElemet of buttonElemets) {
+    const index = buttonElemet.dataset.index;
+    buttonElemet.addEventListener('click', () => {
+      console.log(1);
+
+      if (arrayOfComments[index].lover) {
+        arrayOfComments[index].Likes -= 1
+        arrayOfComments[index].lover = false;
+
+      } else {
+        arrayOfComments[index].Likes += 1
+        arrayOfComments[index].lover = true;
+      }
+      renderChangingMarkup();
+    })
+
+  }
+
+}
+
+
+
+const enterInput = () => {
+  document.addEventListener('keyup', event => {
+    if (event.code === 'Enter')
+      document.querySelector('.add-form-row .add-form-button').click();
+  })
+};
+
+
+
+
+const renderChangingMarkup = () => {
+
+  const arrayCommentsHtml = arrayOfComments.map((item, index) => {
+    return `<ul class="comments">
+    <li class="comment" data-delete="${index}">
+      <div class="comment-header">
+        <div>${item.name}</div>
+        <div>${item.time}</div>
+      </div>
+      <div class="comment-body">
+        <div class="comment-text">
+          ${item.comment}
+        </div>
+      </div>
+      <div class="comment-footer">
+        <div class="likes">
+          <span class="likes-counter">${item.Likes}</span>
+          <button class="like-button ${item.lover ? '-active-like' : ''}" data-index="${index}"></button>
+        </div>
+      </div>
+    </li>
+  </ul>`
+  }).join('');
+
+  list.innerHTML = arrayCommentsHtml;
+
+
+  disablingButton();
+  addingLikes();
+  enterInput();
+}
+renderChangingMarkup();
 
 
 
@@ -44,30 +129,27 @@ button.addEventListener('click', () => {
     return;
   }
 
-  const theWholeList = list.innerHTML;
+  arrayOfComments.push(
+    {
+      name: inputName.value,
+      comment: inputComments.value,
+      time: currentDate(new Date()),
+      Likes: 0,
+      lover: false,
+    }
+  )
 
-  list.innerHTML = theWholeList + `<ul class="comments">
-    <li class="comment">
-      <div class="comment-header">
-        <div>${inputName.value}</div>
-        <div>${currentDate(new Date())}</div>
-      </div>
-      <div class="comment-body">
-        <div class="comment-text">
-          ${inputComments.value}
-        </div>
-      </div>
-      <div class="comment-footer">
-        <div class="likes">
-          <span class="likes-counter">0</span>
-          <button class="like-button"></button>
-        </div>
-      </div>
-    </li>
-  </ul>`
   inputName.value = '';
   inputComments.value = '';
   button.disabled = true;
+
+  renderChangingMarkup();
+})
+
+buttonTwo.addEventListener('click', () => {
+
+  arrayOfComments.splice(arrayOfComments.length - 1, 1)
+  renderChangingMarkup();
 })
 
 inputName.addEventListener('input', disablingButton);
