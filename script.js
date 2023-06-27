@@ -10,16 +10,16 @@ const arrayOfComments = [
     name: 'Глеб Фокин',
     time: '12.02.22 12:18',
     comment: 'Это будет первый комментарий на этой странице',
-    Likes: 3,
-    lover: false
+    likes: 3,
+    islover: false
   },
 
   {
     name: 'Варвара Н.',
     time: '13.02.22 19:22',
     comment: 'Мне нравится как оформлена эта страница! ❤',
-    Likes: 75,
-    lover: false
+    likes: 75,
+    islover: false
   }
 ];
 const currentDate = (data) => {
@@ -55,13 +55,13 @@ const addingLikes = () => {
     buttonElemet.addEventListener('click', () => {
       console.log(1);
 
-      if (arrayOfComments[index].lover) {
-        arrayOfComments[index].Likes -= 1
-        arrayOfComments[index].lover = false;
+      if (arrayOfComments[index].islover) {
+        arrayOfComments[index].likes -= 1
+        arrayOfComments[index].islover = false;
 
       } else {
-        arrayOfComments[index].Likes += 1
-        arrayOfComments[index].lover = true;
+        arrayOfComments[index].likes += 1
+        arrayOfComments[index].islover = true;
       }
       renderChangingMarkup();
     })
@@ -98,8 +98,8 @@ const renderChangingMarkup = () => {
       </div>
       <div class="comment-footer">
         <div class="likes">
-          <span class="likes-counter">${item.Likes}</span>
-          <button class="like-button ${item.lover ? '-active-like' : ''}" data-index="${index}"></button>
+          <span class="likes-counter">${item.likes}</span>
+          <button class="like-button ${item.islover ? '-active-like' : ''}" data-index="${index}"></button>
         </div>
       </div>
     </li>
@@ -131,11 +131,19 @@ button.addEventListener('click', () => {
 
   arrayOfComments.push(
     {
-      name: inputName.value,
-      comment: inputComments.value,
+      name: inputName.value
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;"),
+      comment: inputComments.value
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;"),
       time: currentDate(new Date()),
-      Likes: 0,
-      lover: false,
+      likes: 0,
+      islover: false,
     }
   )
 
