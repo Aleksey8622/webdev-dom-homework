@@ -10,3 +10,4 @@ https://glebkaf.github.io/webdev-dom-homework/
 
 Добавил новый файл script.js
 В котором написал весь код для ДЗ 2.9 DOM-1
+Релизовал счетчик лайков для ДЗ 2.10 DOM-2
