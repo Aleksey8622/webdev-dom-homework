@@ -4,8 +4,7 @@ const buttonTwo = document.querySelector('.add-form-button-two');
 const list = document.querySelector('.comments');
 const inputName = document.querySelector('.add-form-name');
 const inputComments = document.querySelector('.add-form-text');
-
-const arrayOfComments = [
+let arrayOfComments = [
   {
     name: 'Глеб Фокин',
     time: '12.02.22 12:18',
@@ -24,6 +23,39 @@ const arrayOfComments = [
     isEdit: true,
   }
 ];
+
+const fetchComments = fetch("https://wedev-api.sky.pro/api/v1/Aleksey-Rudnev/comments", {
+  method: "GET"
+})
+fetchComments.then((response) => {
+
+  const jsonComments = response.json();
+
+  jsonComments.then((responseCommets) => {
+
+    const massComments = responseCommets.comments.map((comment) => {
+      return {
+        name: comment.author.name,
+        date: currentDate(new Date(comment.date)),
+        text: comment.text,
+        likes: comment.likes,
+        islover: false,
+        isEdit: true,
+      };
+
+
+    });
+
+    arrayOfComments = massComments;
+    console.log(arrayOfComments);
+    renderChangingMarkup();
+
+  })
+
+})
+
+
+
 
 // Функция отображения корректного времени в комментариях
 const currentDate = (data) => {
@@ -86,7 +118,7 @@ const commentЕditor = () => {
 
       const index = commentBodyElement.dataset.delete
 
-      inputComments.value = `${arrayOfComments[index].comment + ' ' + arrayOfComments[index].name + ':'}`;
+      inputComments.value = `${arrayOfComments[index].text + ' ' + arrayOfComments[index].name + ':'}`;
 
     })
 
@@ -111,7 +143,8 @@ const changesComments = () => {
         arrayOfComments[index].comment
         arrayOfComments[index].isEdit = false
 
-      } else if (arrayOfComments[index].isEdit === false) {
+      } else {
+        arrayOfComments[index].isEdit = buttonEditor.closest('.comment').querySelector('textarea').value
         arrayOfComments[index].isEdit = true
       }
 
@@ -146,14 +179,14 @@ const renderChangingMarkup = () => {
     <li class="comment" data-delete="${index}">
       <div class="comment-header">
         <div>${item.name}</div>
-        <div>${item.time}</div>
+        <div>${item.date}</div>
       </div>
       <div class="comment-body" data-edit="${index}">
       ${item.isEdit
         ? `<div class="comment-text data-div=${index}">
-        ${item.comment}
+        ${item.text}
       </div>`
-        : `<textarea type="textarea" class='add-form-text' rows="4">${item.comment}</textarea>`
+        : `<textarea type="textarea" class='add-form-text' rows="4">${item.text}</textarea>`
       }
       </div>
       <button data-edit="${index}" class="add-form-button-three ">${item.isEdit ? 'Редактировать' : 'Сохранить'}</button>
@@ -191,6 +224,16 @@ button.addEventListener('click', () => {
   if (inputComments.value === '') {
     inputComments.classList.add('error')
     return;
+  }
+
+  // Реализована логика с помощью метода trim()
+  // Не добовляет комментарий только с пробелами
+  if (inputName.value = " ") {
+    return inputName.value.trim();
+
+  }
+  if (inputComments.value = " ") {
+    return inputComments.value.trim();
   }
   // Метод добавления для в новый комментарий в списке
   arrayOfComments.push(
