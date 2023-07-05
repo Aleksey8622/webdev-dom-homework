@@ -24,36 +24,39 @@ let arrayOfComments = [
   }
 ];
 
-const fetchComments = fetch("https://wedev-api.sky.pro/api/v1/Aleksey-Rudnev/comments", {
-  method: "GET"
-})
-fetchComments.then((response) => {
+const addedComments = () => {
 
-  const jsonComments = response.json();
+  const fetchComments = fetch("https://wedev-api.sky.pro/api/v1/Aleksey-Rudnev/comments", {
+    method: "GET"
+  })
+  fetchComments.then((response) => {
 
-  jsonComments.then((responseCommets) => {
+    const jsonComments = response.json();
 
-    const massComments = responseCommets.comments.map((comment) => {
-      return {
-        name: comment.author.name,
-        date: currentDate(new Date(comment.date)),
-        text: comment.text,
-        likes: comment.likes,
-        islover: false,
-        isEdit: true,
-      };
+    jsonComments.then((responseCommets) => {
+
+      const massComments = responseCommets.comments.map((comment) => {
+        return {
+          name: comment.author.name,
+          date: currentDate(new Date(comment.date)),
+          text: comment.text,
+          likes: comment.likes,
+          islover: false,
+          isEdit: true,
+        };
 
 
-    });
+      });
 
-    arrayOfComments = massComments;
-    console.log(arrayOfComments);
-    renderChangingMarkup();
+      arrayOfComments = massComments;
+      renderChangingMarkup();
+      console.log(arrayOfComments);
+    })
 
   })
 
-})
-
+}
+addedComments();
 
 
 
@@ -178,7 +181,11 @@ const renderChangingMarkup = () => {
     return `<ul class="comments">
     <li class="comment" data-delete="${index}">
       <div class="comment-header">
-        <div>${item.name}</div>
+        <div>${item.name
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")}</div>
         <div>${item.date}</div>
       </div>
       <div class="comment-body" data-edit="${index}">
@@ -232,28 +239,27 @@ button.addEventListener('click', () => {
     return inputName.value.trim();
 
   }
-  if (inputComments.value = " ") {
+  if (inputComments.value === " ") {
     return inputComments.value.trim();
   }
   // Метод добавления для в новый комментарий в списке
-  arrayOfComments.push(
-    {
-      name: inputName.value
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;"),
-      comment: inputComments.value
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;"),
-      time: currentDate(new Date()),
-      likes: 0,
-      islover: false,
-      isEdit: true,
-    }
-  )
+  fetch("https://wedev-api.sky.pro/api/v1/Aleksey-Rudnev/comments", {
+
+    method: "POST",
+    body: JSON.stringify({
+      text: inputName.value, name: inputComments.value
+    })
+
+  }).then((response) => {
+
+    response.json().then((responsecomments) => {
+
+      arrayOfComments = responsecomments.comments
+      renderChangingMarkup();
+      addedComments();
+
+    })
+  })
 
   inputName.value = '';
   inputComments.value = '';
