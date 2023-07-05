@@ -5,27 +5,28 @@ const list = document.querySelector('.comments');
 const inputName = document.querySelector('.add-form-name');
 const inputComments = document.querySelector('.add-form-text');
 let arrayOfComments = [
-  {
-    name: 'Глеб Фокин',
-    time: '12.02.22 12:18',
-    comment: 'Это будет первый комментарий на этой странице',
-    likes: 3,
-    islover: false,
-    isEdit: true,
-  },
+  // {
+  //   name: 'Глеб Фокин',
+  //   time: '12.02.22 12:18',
+  //   comment: 'Это будет первый комментарий на этой странице',
+  //   likes: 3,
+  //   islover: false,
+  //   isEdit: true,
+  // },
 
-  {
-    name: 'Варвара Н.',
-    time: '13.02.22 19:22',
-    comment: 'Мне нравится как оформлена эта страница! ❤',
-    likes: 75,
-    islover: false,
-    isEdit: true,
-  }
+  // {
+  //   name: 'Варвара Н.',
+  //   time: '13.02.22 19:22',
+  //   comment: 'Мне нравится как оформлена эта страница! ❤',
+  //   likes: 75,
+  //   islover: false,
+  //   isEdit: true,
+  // }
 ];
 
-const addedComments = () => {
+// Функция Fetch() получаем из API с помощью метода GET ответ от сервера
 
+const addedComments = () => {
   const fetchComments = fetch("https://wedev-api.sky.pro/api/v1/Aleksey-Rudnev/comments", {
     method: "GET"
   })
@@ -44,19 +45,16 @@ const addedComments = () => {
           islover: false,
           isEdit: true,
         };
-
-
       });
 
       arrayOfComments = massComments;
-      renderChangingMarkup();
+      renderChangingMarkup()
       console.log(arrayOfComments);
     })
 
   })
-
 }
-addedComments();
+addedComments()
 
 
 
@@ -235,30 +233,24 @@ button.addEventListener('click', () => {
 
   // Реализована логика с помощью метода trim()
   // Не добовляет комментарий только с пробелами
-  if (inputName.value = " ") {
+  if (inputName.value === " ") {
     return inputName.value.trim();
 
   }
   if (inputComments.value === " ") {
     return inputComments.value.trim();
   }
-  // Метод добавления для в новый комментарий в списке
+  // Метод fetch() запрос через API на добовление данных c сохранением на сервере комментарий в списке
   fetch("https://wedev-api.sky.pro/api/v1/Aleksey-Rudnev/comments", {
 
     method: "POST",
     body: JSON.stringify({
-      text: inputName.value, name: inputComments.value
+      text: inputComments.value,
+      name: inputName.value
     })
-
-  }).then((response) => {
-
-    response.json().then((responsecomments) => {
-
-      arrayOfComments = responsecomments.comments
-      renderChangingMarkup();
-      addedComments();
-
-    })
+    // Вызов повторно метод GET в методе POST для того что бы добавлялся комментарий
+  }).then(() => {
+    addedComments()
   })
 
   inputName.value = '';
