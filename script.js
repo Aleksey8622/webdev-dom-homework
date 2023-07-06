@@ -4,6 +4,9 @@ const buttonTwo = document.querySelector('.add-form-button-two');
 const list = document.querySelector('.comments');
 const inputName = document.querySelector('.add-form-name');
 const inputComments = document.querySelector('.add-form-text');
+
+
+// Массив объектов сохранен на сервере и данные приходят с сервера через API
 let arrayOfComments = [
   // {
   //   name: 'Глеб Фокин',
@@ -43,7 +46,7 @@ const addedComments = () => {
           text: comment.text,
           likes: comment.likes,
           islover: false,
-          isEdit: true,
+          isEdit: false,
         };
       });
 
@@ -141,11 +144,10 @@ const changesComments = () => {
       const index = buttonEditor.dataset.edit
 
       if (arrayOfComments[index].isEdit) {
-        arrayOfComments[index].comment
+        arrayOfComments[index].text = buttonEditor.closest('.comment').querySelector('textarea').value
         arrayOfComments[index].isEdit = false
 
       } else {
-        arrayOfComments[index].isEdit = buttonEditor.closest('.comment').querySelector('textarea').value
         arrayOfComments[index].isEdit = true
       }
 
@@ -179,22 +181,17 @@ const renderChangingMarkup = () => {
     return `<ul class="comments">
     <li class="comment" data-delete="${index}">
       <div class="comment-header">
-        <div>${item.name
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")}</div>
+        <div>${item.name}</div>
         <div>${item.date}</div>
       </div>
       <div class="comment-body" data-edit="${index}">
       ${item.isEdit
-        ? `<div class="comment-text data-div=${index}">
+        ? `<textarea type="textarea" class='add-form-text' rows="4">${item.text}</textarea>`
+        : `<div class="comment-text data-div=${index}">
         ${item.text}
-      </div>`
-        : `<textarea type="textarea" class='add-form-text' rows="4">${item.text}</textarea>`
-      }
+      </div>`}
       </div>
-      <button data-edit="${index}" class="add-form-button-three ">${item.isEdit ? 'Редактировать' : 'Сохранить'}</button>
+      <button data-edit="${index}" class="add-form-button-three ">${item.isEdit ? 'Сохранить' : 'Редоктировать'}</button>
       <div class="comment-footer">
         <div class="likes">
           <span class="likes-counter">${item.likes}</span>
@@ -204,7 +201,7 @@ const renderChangingMarkup = () => {
     </li>
   </ul>`
   }).join('');
-
+  console.log(arrayCommentsHtml);
   list.innerHTML = arrayCommentsHtml;
 
 
@@ -268,3 +265,7 @@ buttonTwo.addEventListener('click', () => {
 
 inputName.addEventListener('input', disablingButton);
 inputComments.addEventListener('input', disablingButton);
+// .replaceAll("&", "&amp;")
+// .replaceAll("<", "&lt;")
+// .replaceAll(">", "&gt;")
+// .replaceAll('"', "&quot;")
