@@ -6,7 +6,7 @@ const inputName = document.querySelector('.add-form-name');
 const inputComments = document.querySelector('.add-form-text');
 const textElementsLoad = document.querySelector(".text-load");
 const formElements = document.querySelector(".add-form");
-
+let isLoadind = true;
 
 // Массив объектов сохранен на сервере и данные приходят с сервера через API
 let arrayOfComments = [
@@ -32,8 +32,7 @@ let arrayOfComments = [
 // Функция Fetch() получаем из API с помощью метода GET ответ от сервера
 
 const addedComments = () => {
-  textElementsLoad.disabled = true
-  textElementsLoad.textContent = "Комментарии загружаются подождите пожалуйста";
+
 
   return fetch("https://wedev-api.sky.pro/api/v1/Aleksey-Rudnev/comments", {
     method: "GET"
@@ -42,8 +41,6 @@ const addedComments = () => {
       return response.json();
     })
     .then((data) => {
-      textElementsLoad.disabled = false
-      textElementsLoad.textContent = ""
       return data
     })
     .then((responseCommets) => {
@@ -172,9 +169,19 @@ const enterInput = () => {
 };
 
 
-const changeText = () => {
+const renderFormElements = () => {
 
+  const formElementsHtml = formElements.innerHTML
 
+  formElements.innerHTML = formElementsHtml + `<div class="add-form">
+  <input type="text" class="add-form-name" placeholder="Введите ваше имя" />
+  <textarea id="text" type="textarea" class="add-form-text" placeholder="Введите ваш коментарий"
+    rows="4"></textarea>
+  <div class="add-form-row">
+    <button class="add-form-button">Написать</button>
+    <button class="add-form-button-two">Удалить</button>
+  </div>
+</div>`
 }
 
 // Функция рендер добовления в разметку
@@ -218,11 +225,13 @@ const renderChangingMarkup = () => {
 addedComments();
 renderChangingMarkup();
 
+
+
 // Метод fetch() запрос через API на добовление данных c сохранением на сервере комментарий в списке
 const sedingsServer = () => {
 
 
-  formElements.textContent = "Комментарий добовляется";
+  (isLoadind) ? formElements.textContent = 'Комментарий добавляется' : formElements.textContent = "";
 
   fetch("https://wedev-api.sky.pro/api/v1/Aleksey-Rudnev/comments", {
 
@@ -243,6 +252,14 @@ const sedingsServer = () => {
   })
     .then((response) => {
       return response
+    })
+    .then((response) => {
+      isLoadind === true
+      return response
+    })
+    .then((responseData) => {
+      isLoadind === false
+      return responseData
     })
     .then((responseData) => {
       addedComments()
