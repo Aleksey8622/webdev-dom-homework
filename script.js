@@ -4,6 +4,8 @@ const buttonTwo = document.querySelector('.add-form-button-two');
 const list = document.querySelector('.comments');
 const inputName = document.querySelector('.add-form-name');
 const inputComments = document.querySelector('.add-form-text');
+const textElementsLoad = document.querySelector(".text-load");
+const formElements = document.querySelector(".add-form");
 
 
 // Массив объектов сохранен на сервере и данные приходят с сервера через API
@@ -30,14 +32,21 @@ let arrayOfComments = [
 // Функция Fetch() получаем из API с помощью метода GET ответ от сервера
 
 const addedComments = () => {
-  const fetchComments = fetch("https://wedev-api.sky.pro/api/v1/Aleksey-Rudnev/comments", {
+  textElementsLoad.disabled = true
+  textElementsLoad.textContent = "Комментарии загружаются подождите пожалуйста";
+
+  return fetch("https://wedev-api.sky.pro/api/v1/Aleksey-Rudnev/comments", {
     method: "GET"
   })
-  fetchComments.then((response) => {
-
-    const jsonComments = response.json();
-
-    jsonComments.then((responseCommets) => {
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      textElementsLoad.disabled = false
+      textElementsLoad.textContent = ""
+      return data
+    })
+    .then((responseCommets) => {
 
       const massComments = responseCommets.comments.map((comment) => {
         return {
@@ -48,18 +57,13 @@ const addedComments = () => {
           islover: false,
           isEdit: false,
         };
-      });
+      })
 
       arrayOfComments = massComments;
       renderChangingMarkup()
       console.log(arrayOfComments);
     })
-
-  })
-}
-addedComments()
-
-
+};
 
 // Функция отображения корректного времени в комментариях
 const currentDate = (data) => {
@@ -191,7 +195,7 @@ const renderChangingMarkup = () => {
         ${item.text}
       </div>`}
       </div>
-      <button data-edit="${index}" class="add-form-button-three ">${item.isEdit ? 'Сохранить' : 'Редоктировать'}</button>
+      <button data-edit="${index}" class="add-form-button-three ">${item.isEdit ? 'Сохранить' : 'Редактировать'}</button>
       <div class="comment-footer">
         <div class="likes">
           <span class="likes-counter">${item.likes}</span>
@@ -201,7 +205,6 @@ const renderChangingMarkup = () => {
     </li>
   </ul>`
   }).join('');
-  console.log(arrayCommentsHtml);
   list.innerHTML = arrayCommentsHtml;
 
 
@@ -212,8 +215,46 @@ const renderChangingMarkup = () => {
   changesComments();
 
 }
+addedComments();
 renderChangingMarkup();
 
+// Метод fetch() запрос через API на добовление данных c сохранением на сервере комментарий в списке
+const sedingsServer = () => {
+
+
+  formElements.textContent = "Комментарий добовляется";
+
+  fetch("https://wedev-api.sky.pro/api/v1/Aleksey-Rudnev/comments", {
+
+    method: "POST",
+    body: JSON.stringify({
+      text: inputComments.value
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;"),
+      name: inputName.value
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+    })
+    // Вызов повторно метод GET в методе POST для того что бы добавлялся комментарий
+  })
+    .then((response) => {
+      return response
+    })
+    .then((responseData) => {
+      addedComments()
+      return responseData
+    })
+
+  inputName.value = '';
+  inputComments.value = '';
+  button.disabled = true;
+
+  renderChangingMarkup();
+}
 
 // Обработчик клика на кнопку написать комментарий
 button.addEventListener('click', () => {
@@ -237,25 +278,11 @@ button.addEventListener('click', () => {
   if (inputComments.value === " ") {
     return inputComments.value.trim();
   }
-  // Метод fetch() запрос через API на добовление данных c сохранением на сервере комментарий в списке
-  fetch("https://wedev-api.sky.pro/api/v1/Aleksey-Rudnev/comments", {
-
-    method: "POST",
-    body: JSON.stringify({
-      text: inputComments.value,
-      name: inputName.value
-    })
-    // Вызов повторно метод GET в методе POST для того что бы добавлялся комментарий
-  }).then(() => {
-    addedComments()
-  })
-
-  inputName.value = '';
-  inputComments.value = '';
-  button.disabled = true;
-
-  renderChangingMarkup();
+  sedingsServer();
 })
+
+
+
 
 buttonTwo.addEventListener('click', () => {
 
@@ -265,7 +292,4 @@ buttonTwo.addEventListener('click', () => {
 
 inputName.addEventListener('input', disablingButton);
 inputComments.addEventListener('input', disablingButton);
-// .replaceAll("&", "&amp;")
-// .replaceAll("<", "&lt;")
-// .replaceAll(">", "&gt;")
-// .replaceAll('"', "&quot;")
+
