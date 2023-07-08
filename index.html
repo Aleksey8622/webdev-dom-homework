@@ -10,11 +10,14 @@
 <body>
   <div class="container">
     <div>
-      <p class="text-load"></p>
+      <p style="display: none; color: rgb(255, 255, 255)" class="text-load">Комментарии добовляются</p>
     </div>
     <ul class="comments">
       <!-- Список рендериться из Java Script -->
-    </ul>
+    </ul><br>
+    <div style="display: none; color: rgb(255, 255, 255)" class="loading-add">
+      <p>Комментарий добовляется</p>
+    </div>
     <div class="add-form">
       <input type="text" class="add-form-name" placeholder="Введите ваше имя" />
       <textarea id="text" type="textarea" class="add-form-text" placeholder="Введите ваш коментарий"
