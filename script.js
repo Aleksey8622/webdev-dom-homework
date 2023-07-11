@@ -63,6 +63,10 @@ const addedComments = () => {
       renderChangingMarkup()
       console.log(arrayOfComments);
     })
+    .catch((error) => {
+      alert("Кажется, у вас сломался интернет")
+      console.error(error);
+    })
 };
 
 // Функция отображения корректного времени в комментариях
@@ -172,20 +176,6 @@ const enterInput = () => {
 };
 
 
-// const renderFormElements = () => {
-
-//   const formElementsHtml = formElements.innerHTML
-
-//   formElements.innerHTML = formElementsHtml + `<div class="add-form">
-//   <input type="text" class="add-form-name" placeholder="Введите ваше имя" />
-//   <textarea id="text" type="textarea" class="add-form-text" placeholder="Введите ваш коментарий"
-//     rows="4"></textarea>
-//   <div class="add-form-row">
-//     <button class="add-form-button">Написать</button>
-//     <button class="add-form-button-two">Удалить</button>
-//   </div>
-// </div>`
-// }
 
 // Функция рендер добовления в разметку
 const renderChangingMarkup = () => {
@@ -226,9 +216,38 @@ const renderChangingMarkup = () => {
 
 }
 addedComments();
-renderChangingMarkup();
 
+// Отдельная функция на POST запрос в API
+const addTodo = (name, text) => {
+  return fetch("https://wedev-api.sky.pro/api/v1/Aleksey-Rudnev/comments", {
 
+    method: "POST",
+    body: JSON.stringify({
+      text: text
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;"),
+      name: name
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;"),
+      forceError: true
+    })
+  })// Создан отдельный then для реализации логики if/else и передачи исключений методом throw new Error() отлавливаем ошибки в catch()
+    .then((responseData) => {
+      if (responseData.status === 201) {
+        return responseData.json()
+      } else if (responseData.status === 400) {
+        throw new Error("Не верный ввод")
+      } else if (responseData.status === 500) {
+        throw new Error("Сломался сервер")
+      } else {
+        throw new Error("Не работает интернет")
+      }
+    })
+}
 
 // Метод fetch() запрос через API на добовление данных c сохранением на сервере комментарий в списке
 const sedingsServer = () => {
@@ -236,39 +255,36 @@ const sedingsServer = () => {
   loadingElements.style.display = 'block';
   formElements.style.display = 'none'
 
-  fetch("https://wedev-api.sky.pro/api/v1/Aleksey-Rudnev/comments", {
-
-    method: "POST",
-    body: JSON.stringify({
-      text: inputComments.value
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;"),
-      name: inputName.value
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-    })
-    // Вызов повторно метод GET в методе POST для того что бы добавлялся комментарий
+  // Функция AddTodo отдельно для передачи POST запроса
+  addTodo(inputName.value, inputComments.value).then((response) => {
+    return response
   })
-    .then((response) => {
-      return response
+    .then(() => {
+      return addedComments()// Вызов повторно метод GET в методе POST для того что бы добавлялся комментарий
     })
     .then(() => {
-      return addedComments()
-    })
-    .then(() => {
+      button.disabled = true;
+      inputName.value = '';
+      inputComments.value = '';
       loadingElements.style.display = 'none';
       formElements.style.display = 'flex'
     })
+    .catch((error) => {
+      loadingElements.style.display = 'none';
+      formElements.style.display = 'flex'
+      if (error.message === "Не верный ввод") {
+        alert("Имя и комментарий должны быть не короче 3 символов")
+      } else if (error.message === "Сломался сервер") {
+        alert("Сервер сломался, попробуй позже")
+      } else {
+        alert("Кажется, у вас сломался интернет, попробуйте позже")
+      }
+    })
 
-  inputName.value = '';
-  inputComments.value = '';
-  button.disabled = true;
 
-  renderChangingMarkup();
+
+
+
 }
 
 // Обработчик клика на кнопку написать комментарий
@@ -298,7 +314,7 @@ button.addEventListener('click', () => {
 
 
 
-
+// Клик на кнопку удаление комментариев 
 buttonTwo.addEventListener('click', () => {
 
   arrayOfComments.splice(arrayOfComments.length - 1, 1)
