@@ -235,18 +235,7 @@ const addTodo = (name, text) => {
         .replaceAll('"', "&quot;"),
       forceError: true
     })
-  })// Создан отдельный then для реализации логики if/else и передачи исключений методом throw new Error() отлавливаем ошибки в catch()
-    .then((responseData) => {
-      if (responseData.status === 201) {
-        return responseData.json()
-      } else if (responseData.status === 400) {
-        throw new Error("Не верный ввод")
-      } else if (responseData.status === 500) {
-        throw new Error("Сломался сервер")
-      } else {
-        throw new Error("Не работает интернет")
-      }
-    })
+  })
 }
 
 // Метод fetch() запрос через API на добовление данных c сохранением на сервере комментарий в списке
@@ -259,6 +248,19 @@ const sedingsServer = () => {
   addTodo(inputName.value, inputComments.value).then((response) => {
     return response
   })
+    // Создан отдельный then для реализации логики if/else и передачи исключений методом throw new Error() отлавливаем ошибки в catch()
+    .then((responseData) => {
+      if (responseData.status === 201) {
+        return responseData.json()
+      } else if (responseData.status === 400) {
+        throw new Error("Не верный ввод")
+      } else if (responseData.status === 500) {
+        console.log(responseData.status);
+        throw new Error("Сломался сервер")
+      } else {
+        throw new Error("Не работает интернет")
+      }
+    })
     .then(() => {
       return addedComments()// Вызов повторно метод GET в методе POST для того что бы добавлялся комментарий
     })
@@ -275,16 +277,45 @@ const sedingsServer = () => {
       if (error.message === "Не верный ввод") {
         alert("Имя и комментарий должны быть не короче 3 символов")
       } else if (error.message === "Сломался сервер") {
-        alert("Сервер сломался, попробуй позже")
+        addTodoError()
+        // alert("Сервер сломался, попробуй позже")
       } else {
         alert("Кажется, у вас сломался интернет, попробуйте позже")
       }
     })
 
+}
 
+// Функция повторного отправления запроса при 500 ошибки API
+function addTodoError() {
+  addTodo(inputName.value, inputComments.value).then((response) => {
+    return response
+  })// Создан отдельный then для реализации логики if/else и передачи исключений методом throw new Error() отлавливаем ошибки в catch()
+    .then((responseData) => {
+      console.log(responseData);
+      if (responseData.status === 500) {
+        throw new Error("Сломался сервер")
 
-
-
+      } else {
+        return responseData.json()
+      }
+    })
+    .then(() => {
+      return addedComments();
+    })
+    .then(() => {
+      button.disabled = true;
+      inputName.value = '';
+      inputComments.value = '';
+      loadingElements.style.display = 'none';
+      formElements.style.display = 'flex'
+    })
+    .catch((error) => {
+      alert("Кажется, у вас сломался интернет!!!!!!!!!")
+      loadingElements.style.display = 'block';
+      formElements.style.display = 'none'
+      addTodoError()
+    })
 }
 
 // Обработчик клика на кнопку написать комментарий
