@@ -272,8 +272,8 @@ const sedingsServer = () => {
       formElements.style.display = 'flex'
     })
     .catch((error) => {
-      loadingElements.style.display = 'none';
-      formElements.style.display = 'flex'
+      loadingElements.style.display = 'block';
+      formElements.style.display = 'none'
       if (error.message === "Не верный ввод") {
         alert("Имя и комментарий должны быть не короче 3 символов")
       } else if (error.message === "Сломался сервер") {
@@ -311,7 +311,7 @@ function addTodoError() {
       formElements.style.display = 'flex'
     })
     .catch((error) => {
-      alert("Кажется, у вас сломался интернет!!!!!!!!!")
+      alert("Кажется, что на сервере проблемы делаем повторный запрос!!!!!!!!!")
       loadingElements.style.display = 'block';
       formElements.style.display = 'none'
       addTodoError()
