@@ -8,11 +8,12 @@ export { textElementsLoad }
 import { getComments } from "./api.js";
 import { currentDate } from "./date.js";
 import { renderChangingMarkup } from "./render.js";
-// import { sedingsServer } from "./module/api.js";
 import { addTodo } from "./api.js";
-// import { addTodoError } from "./module/api.js";
 import { disablingButton } from "./function.js";
 import { commentЕditor } from "./function.js";
+import { enterInput } from "./function.js";
+import { addingLikes } from "./function.js";
+import { changesComments } from "./function.js";
 const list = document.querySelector('.comments');
 const button = document.querySelector('.add-form-button');
 const buttonTwo = document.querySelector('.add-form-button-two');
@@ -61,7 +62,7 @@ const addedComments = () => {
     })
 
     arrayOfComments = massComments;
-    renderChangingMarkup({ arrayOfComments, disablingButton, addingLikes, enterInput, commentЕditor, changesComments })
+    renderChangingMarkup({ arrayOfComments, disablingButton, enterInput, addingLikes, commentЕditor, changesComments })
     console.log(arrayOfComments);
   })
     .catch((error) => {
@@ -71,89 +72,9 @@ const addedComments = () => {
 };
 
 
+addingLikes();
 
-// Функция счетчик лайков
-const addingLikes = () => {
-
-  const buttonElemets = document.querySelectorAll('.like-button');
-
-  for (const buttonElemet of buttonElemets) {
-    const index = buttonElemet.dataset.index;
-    buttonElemet.addEventListener('click', (event) => {
-      event.stopPropagation();
-
-      if (arrayOfComments[index].islover) {
-        arrayOfComments[index].likes -= 1
-        arrayOfComments[index].islover = false;
-
-      } else {
-        arrayOfComments[index].likes += 1
-        arrayOfComments[index].islover = true;
-      }
-      renderChangingMarkup({ arrayOfComments, disablingButton, addingLikes, enterInput, commentЕditor, changesComments });
-    })
-
-  }
-
-}
-
-// Функция ответа на комментария
-// const commentЕditor = () => {
-
-//   const commentBodyElements = document.querySelectorAll('.comment');
-
-//   for (const commentBodyElement of commentBodyElements) {
-
-//     commentBodyElement.addEventListener('click', () => {
-
-
-//       const index = commentBodyElement.dataset.delete
-
-//       inputComments.value = `${arrayOfComments[index].text + ' ' + arrayOfComments[index].name + ':'}`;
-
-//     })
-
-//   }
-
-// }
-
-// Функция редоктирования комментария
-const changesComments = () => {
-
-  const buttonEditors = document.querySelectorAll('.add-form-button-three');
-
-
-  for (const buttonEditor of buttonEditors) {
-
-    buttonEditor.addEventListener('click', (event) => {
-      event.stopPropagation();
-
-      const index = buttonEditor.dataset.edit
-
-      if (arrayOfComments[index].isEdit) {
-        arrayOfComments[index].text = buttonEditor.closest('.comment').querySelector('textarea').value
-        arrayOfComments[index].isEdit = false
-
-      } else {
-        arrayOfComments[index].isEdit = true
-      }
-
-      renderChangingMarkup({ arrayOfComments, disablingButton, addingLikes, enterInput, commentЕditor, changesComments });
-    })
-
-  }
-}
-
-
-
-// Функция добовления комментария на кнопку Enter
-const enterInput = () => {
-  document.addEventListener('keyup', event => {
-    if (event.key === 'Enter')
-      document.querySelector('.add-form-row .add-form-button').click();
-  })
-};
-
+changesComments();
 
 
 // Функция рендер добовления в разметку
@@ -296,7 +217,7 @@ button.addEventListener('click', () => {
 buttonTwo.addEventListener('click', () => {
 
   arrayOfComments.splice(arrayOfComments.length - 1, 1)
-  renderChangingMarkup({ arrayOfComments, disablingButton, addingLikes, enterInput, commentЕditor, changesComments });
+  renderChangingMarkup({ arrayOfComments, disablingButton, enterInput, commentЕditor, changesComments });
 })
 
 inputName.addEventListener('input', disablingButton);
