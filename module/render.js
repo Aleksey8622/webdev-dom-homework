@@ -1,5 +1,6 @@
 
 // Функция рендер добовления в разметку
+
 import { list } from "./main.js";
 export const renderChangingMarkup = ({ arrayOfComments, disablingButton, addingLikes, enterInput, commentЕditor, changesComments }) => {
 
@@ -32,7 +33,7 @@ export const renderChangingMarkup = ({ arrayOfComments, disablingButton, addingL
 
 
   disablingButton();
-  addingLikes();
+  addingLikes()
   enterInput();
   commentЕditor();
   changesComments();
