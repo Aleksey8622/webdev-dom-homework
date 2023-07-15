@@ -1,4 +1,4 @@
-import { arrayOfComments } from "./main.js"
+import { arrayOfComments } from "./api.js"
 import { button } from "./main.js"
 import { inputName } from "./main.js"
 import { inputComments } from "./main.js"
