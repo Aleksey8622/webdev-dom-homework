@@ -1,18 +1,25 @@
 import { currentDate } from "./helpers.js";
-import { renderLogin } from "./loginPage.js";
+
 import { renderChangingMarkup } from "./render.js";
+
+
 const textElementsLoad = document.querySelector(".text-load");
-const inputName = document.querySelector(".add-form-name");
-const inputComments = document.querySelector(".add-form-text");
+const inputName = document.getElementById("form-name");
+const inputComments = document.getElementById("form-text");
 const button = document.querySelector(".add-form-button");
 const loadingElements = document.querySelector(".loading-add");
-const formElements = document.querySelector(".add-form");
+
 const url = "https://wedev-api.sky.pro/api/v2/Aleksey-Rudnev/comments";
 const userUrl = "https://wedev-api.sky.pro/api/user/login";
 
 export let token;
 export function userToken(newToken) {
   token = newToken;
+}
+
+export let name;
+export function userName(newName) {
+  name = newName
 }
 
 export { arrayOfComments };
@@ -65,7 +72,7 @@ export const addedComments = () => {
       });
 
       arrayOfComments = massComments;
-      renderChangingMarkup({ renderLogin });
+      renderChangingMarkup();
 
       console.log(arrayOfComments);
     })
@@ -100,6 +107,9 @@ export const addTodo = (name, text) => {
 
 // Метод fetch() запрос через API на добовление данных c сохранением на сервере комментарий в списке
 export const sedingsServer = () => {
+  const formElements = document.getElementById("add-form");
+  const inputName = document.getElementById("form-name");
+  const inputComments = document.getElementById("form-text");
   loadingElements.style.display = "block";
   formElements.style.display = "none";
 

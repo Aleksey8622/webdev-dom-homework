@@ -1,9 +1,7 @@
-import { arrayOfComments } from "./api.js";
+import { arrayOfComments, name } from "./api.js";
 import { renderChangingMarkup } from "./render.js";
 
-const inputName = document.querySelector(".add-form-name");
-const inputComments = document.querySelector(".add-form-text");
-const button = document.querySelector(".add-form-button");
+
 
 // Функция отображения корректного времени в комментариях
 export const currentDate = (data) => {
@@ -32,13 +30,22 @@ export const currentDate = (data) => {
   return conclusion;
 };
 
+
+
 // Функция валидация
 export const disablingButton = () => {
-  if (inputName.value && inputComments.value) {
+
+
+  const inputComments = document.getElementById("form-text");
+  const button = document.getElementById("form-button");
+
+  if (inputComments.value) {
+
     button.disabled = false;
   } else {
     button.disabled = true;
   }
+
 };
 
 // Функция счетчик лайков
@@ -97,14 +104,14 @@ export const changesComments = () => {
 // Функция ответа на комментария
 export const commentЕditor = () => {
   const commentBodyElements = document.querySelectorAll(".comment");
+  const inputComments = document.getElementById("form-text");
 
   for (const commentBodyElement of commentBodyElements) {
     commentBodyElement.addEventListener("click", () => {
       const index = commentBodyElement.dataset.delete;
 
-      inputComments.value = `${
-        arrayOfComments[index].text + " " + arrayOfComments[index].name + ":"
-      }`;
+      inputComments.value = `${arrayOfComments[index].text + " " + arrayOfComments[index].name + ":"
+        }`;
     });
   }
 };

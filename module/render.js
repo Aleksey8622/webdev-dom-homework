@@ -1,11 +1,12 @@
-import { arrayOfComments, sedingsServer } from "./api.js";
+import { arrayOfComments, name, sedingsServer } from "./api.js";
 import { disablingButton } from "./helpers.js";
 import { addingLikes } from "./helpers.js";
 import { enterInput } from "./helpers.js";
 import { changesComments } from "./helpers.js";
 import { commentЕditor } from "./helpers.js";
 
-const list = document.querySelector(".comments");
+
+
 
 // Функция рендер добовления в разметку
 export const renderChangingMarkup = () => {
@@ -19,23 +20,20 @@ export const renderChangingMarkup = () => {
           <div>${item.date}</div>
         </div>
         <div class="comment-body" data-edit="${index}">
-        ${
-          item.isEdit
-            ? `<textarea type="textarea" class='add-form-text' rows="4">${item.text}</textarea>`
-            : `<div class="comment-text data-div=${index}">
+        ${item.isEdit
+          ? `<textarea type="textarea" class='add-form-text' rows="4">${item.text}</textarea>`
+          : `<div class="comment-text data-div=${index}">
           ${item.text}
         </div>`
         }
         </div>
-        <button data-edit="${index}" class="add-form-button-three ">${
-        item.isEdit ? "Сохранить" : "Редактировать"
-      }</button>
+        <button data-edit="${index}" class="add-form-button-three ">${item.isEdit ? "Сохранить" : "Редактировать"
+        }</button>
         <div class="comment-footer">
           <div class="likes">
             <span class="likes-counter">${item.likes}</span>
-            <button class="like-button ${
-              item.islover ? "-active-like" : ""
-            }" data-index="${index}"></button>
+            <button class="like-button ${item.islover ? "-active-like" : ""
+        }" data-index="${index}"></button>
           </div>
         </div>
       </li>
@@ -43,8 +41,10 @@ export const renderChangingMarkup = () => {
     })
     .join("");
 
+
+
   const appHtml = ` <div class="container">
-    <div class="text-load">
+    <div id="load" class="text-load">
       <p>Обновление ленты комментариев пожалуйста подождите!</p>
     </div>
     <ul class="comments">
@@ -55,37 +55,39 @@ export const renderChangingMarkup = () => {
     <div style="display: none; color: rgb(255, 255, 255)" class="loading-add">
       <p>Комментарий добовляется</p>
     </div>
-    <div class="add-form">
-      <input
-        type="text"
-        class="add-form-name"
-        placeholder="Введите ваше имя"
-      />
+    <div id="add-form" class="add-form">
+      <input value="${name}" readonly id="form-name" type="text" class="add-form-name" placeholder="Введите ваше имя" />
       <textarea
-        id="text"
+      id="form-text"
         type="textarea"
         class="add-form-text"
         placeholder="Введите ваш коментарий"
         rows="4"
       ></textarea>
       <div class="add-form-row">
-        <button class="add-form-button">Написать</button>
-        <button class="add-form-button-two">Удалить</button>
+        <button id="form-button" class="add-form-button">Написать</button>
+        <button id="form-button-two" class="add-form-button-two">Удалить</button>
       </div>
     </div>
   </div>`;
   appElement.innerHTML = appHtml;
 
-  disablingButton();
+
+
+
+
+
   addingLikes();
   enterInput();
   commentЕditor();
   changesComments();
+  disablingButton();
 
-  const button = document.querySelector(".add-form-button");
-  const buttonTwo = document.querySelector(".add-form-button-two");
-  const inputName = document.querySelector(".add-form-name");
-  const inputComments = document.querySelector(".add-form-text");
+
+  const inputName = document.getElementById("form-name");
+  const inputComments = document.getElementById("form-text");
+  const button = document.getElementById("form-button");
+  const buttonTwo = document.getElementById("form-button-two");
 
   button.addEventListener("click", () => {
     console.log(1);
@@ -99,22 +101,19 @@ export const renderChangingMarkup = () => {
       return;
     }
 
-    // Реализована логика с помощью метода trim()
-    // Не добовляет комментарий только с пробелами
-    if (inputName.value === " ") {
-      return inputName.value.trim();
-    }
-    if (inputComments.value === " ") {
-      return inputComments.value.trim();
-    }
     sedingsServer();
+
+
   });
 
   buttonTwo.addEventListener("click", () => {
     arrayOfComments.splice(arrayOfComments.length - 1, 1);
     renderChangingMarkup();
+
   });
 
-  inputName.addEventListener("input", disablingButton);
+
   inputComments.addEventListener("input", disablingButton);
+
 };
+

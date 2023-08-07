@@ -1,10 +1,5 @@
-import { login, token, userToken } from "./api.js";
+import { login, userName, userToken } from "./api.js";
 
-// const lohinInputElement = document.querySelector("#login-input");
-// const loginPasswordElement = document.querySelector("#login-password");
-// const loginButtonElement = document.querySelector("#login-button");
-
-// loginButtonElement.addEventListener("click", clickButton);
 
 export function renderLogin({ addedComments }) {
   const appElement = document.querySelector("#app");
@@ -30,6 +25,7 @@ export function renderLogin({ addedComments }) {
   </div>`;
 
   appElement.innerHTML = loginHtml;
+  console.log(appElement.innerHTML);
 
   const lohinInputElement = document.querySelector("#login-input");
   const loginPasswordElement = document.querySelector("#login-password");
@@ -44,9 +40,14 @@ export function renderLogin({ addedComments }) {
     })
       .then((responseData) => {
         userToken(responseData.user.token);
+        console.log(responseData.user.token);
+        userName(responseData.user.name);
+        console.log(responseData.user.name);
       })
       .then(() => {
         addedComments();
       });
   }
 }
+
+
