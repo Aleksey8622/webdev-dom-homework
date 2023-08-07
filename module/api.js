@@ -1,4 +1,5 @@
 import { currentDate } from "./helpers.js";
+import { renderLogin } from "./loginPage.js";
 import { renderChangingMarkup } from "./render.js";
 const textElementsLoad = document.querySelector(".text-load");
 const inputName = document.querySelector(".add-form-name");
@@ -7,7 +8,12 @@ const button = document.querySelector(".add-form-button");
 const loadingElements = document.querySelector(".loading-add");
 const formElements = document.querySelector(".add-form");
 const url = "https://wedev-api.sky.pro/api/v2/Aleksey-Rudnev/comments";
-const userUrl = "https://wedev-api.sky.pro/api/user";
+const userUrl = "https://wedev-api.sky.pro/api/user/login";
+
+export let token;
+export function userToken(newToken) {
+  token = newToken;
+}
 
 export { arrayOfComments };
 // Массив объектов сохранен на сервере и данные приходят с сервера через API
@@ -36,8 +42,7 @@ export const addedComments = () => {
   return fetch(url, {
     method: "GET",
     headers: {
-      authorization:
-        "Bearer bgc0b8awbwas6g5g5k5o5s5w606g37w3cc3bo3b83k39s3co3c83c03ck",
+      Authorization: `Bearer ${token}`,
     },
   })
     .then((response) => {
@@ -60,7 +65,8 @@ export const addedComments = () => {
       });
 
       arrayOfComments = massComments;
-      renderChangingMarkup();
+      renderChangingMarkup({ renderLogin });
+
       console.log(arrayOfComments);
     })
     .catch((error) => {
@@ -74,8 +80,7 @@ export const addTodo = (name, text) => {
   return fetch(url, {
     method: "POST",
     headers: {
-      authorization:
-        "Bearer bgc0b8awbwas6g5g5k5o5s5w606g37w3cc3bo3b83k39s3co3c83c03ck",
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
       text: text
@@ -176,12 +181,12 @@ export function addTodoError() {
 
 // Функция login для получения токена для авторизации
 
-export const login = (login, password) => {
+export const login = ({ login, password }) => {
   return fetch(userUrl, {
     method: "POST",
     body: JSON.stringify({
-        login,
-        password,
+      login,
+      password,
     }),
   }).then((responseData) => {
     return responseData.json();

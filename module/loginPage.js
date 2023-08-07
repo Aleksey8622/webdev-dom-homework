@@ -1,0 +1,52 @@
+import { login, token, userToken } from "./api.js";
+
+// const lohinInputElement = document.querySelector("#login-input");
+// const loginPasswordElement = document.querySelector("#login-password");
+// const loginButtonElement = document.querySelector("#login-button");
+
+// loginButtonElement.addEventListener("click", clickButton);
+
+export function renderLogin({ addedComments }) {
+  const appElement = document.querySelector("#app");
+  const loginHtml = `<div class="container">
+    <div class="add-form">
+      <h3>Вхо на страницу</h3>
+      <input
+        id="login-input"
+        type="text"
+        class="add-form-name"
+        placeholder="Введите ваш логин"
+      /><br />
+      <input
+        id="login-password"
+        type="text"
+        class="add-form-name"
+        placeholder="Введите ваш пароль"
+      />
+      <div class="add-form-row">
+        <button id="login-button" class="add-form-button">Войти</button>
+      </div>
+    </div>
+  </div>`;
+
+  appElement.innerHTML = loginHtml;
+
+  const lohinInputElement = document.querySelector("#login-input");
+  const loginPasswordElement = document.querySelector("#login-password");
+  const loginButtonElement = document.querySelector("#login-button");
+
+  loginButtonElement.addEventListener("click", clickButton);
+
+  function clickButton() {
+    login({
+      login: lohinInputElement.value,
+      password: loginPasswordElement.value,
+    })
+      .then((responseData) => {
+        userToken(responseData.user.token);
+      })
+      .then(() => {
+        addedComments();
+      });
+  }
+}

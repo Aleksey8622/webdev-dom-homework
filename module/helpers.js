@@ -64,48 +64,47 @@ export const addingLikes = () => {
 
 // Функция добовления комментария на кнопку Enter
 export const enterInput = () => {
-    document.addEventListener("keyup", (event) => {
-      if (event.key === "Enter")
-        document.querySelector(".add-form-row .add-form-button").click();
-    });
-  };
+  document.addEventListener("keyup", (event) => {
+    if (event.key === "Enter")
+      document.querySelector(".add-form-row .add-form-button").click();
+  });
+};
 
-  // Функция редоктирования комментария
+// Функция редоктирования комментария
 export const changesComments = () => {
-    const buttonEditors = document.querySelectorAll(".add-form-button-three");
-  
-    for (const buttonEditor of buttonEditors) {
-      buttonEditor.addEventListener("click", (event) => {
-        event.stopPropagation();
-  
-        const index = buttonEditor.dataset.edit;
-  
-        if (arrayOfComments[index].isEdit) {
-          arrayOfComments[index].text = buttonEditor
-            .closest(".comment")
-            .querySelector("textarea").value;
-          arrayOfComments[index].isEdit = false;
-        } else {
-          arrayOfComments[index].isEdit = true;
-        }
-  
-        renderChangingMarkup();
-      });
-    }
-  };
+  const buttonEditors = document.querySelectorAll(".add-form-button-three");
 
+  for (const buttonEditor of buttonEditors) {
+    buttonEditor.addEventListener("click", (event) => {
+      event.stopPropagation();
 
-  // Функция ответа на комментария
+      const index = buttonEditor.dataset.edit;
+
+      if (arrayOfComments[index].isEdit) {
+        arrayOfComments[index].text = buttonEditor
+          .closest(".comment")
+          .querySelector("textarea").value;
+        arrayOfComments[index].isEdit = false;
+      } else {
+        arrayOfComments[index].isEdit = true;
+      }
+
+      renderChangingMarkup();
+    });
+  }
+};
+
+// Функция ответа на комментария
 export const commentЕditor = () => {
-    const commentBodyElements = document.querySelectorAll(".comment");
-  
-    for (const commentBodyElement of commentBodyElements) {
-      commentBodyElement.addEventListener("click", () => {
-        const index = commentBodyElement.dataset.delete;
-  
-        inputComments.value = `${
-          arrayOfComments[index].text + " " + arrayOfComments[index].name + ":"
-        }`;
-      });
-    }
-  };
+  const commentBodyElements = document.querySelectorAll(".comment");
+
+  for (const commentBodyElement of commentBodyElements) {
+    commentBodyElement.addEventListener("click", () => {
+      const index = commentBodyElement.dataset.delete;
+
+      inputComments.value = `${
+        arrayOfComments[index].text + " " + arrayOfComments[index].name + ":"
+      }`;
+    });
+  }
+};
