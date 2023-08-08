@@ -1,4 +1,4 @@
-import { arrayOfComments, name, sedingsServer } from "./api.js";
+import { arrayOfComments, name, sedingsServer, deleteTodo, addedComments, id } from "./api.js";
 import { disablingButton } from "./helpers.js";
 import { addingLikes } from "./helpers.js";
 import { enterInput } from "./helpers.js";
@@ -28,7 +28,8 @@ export const renderChangingMarkup = () => {
         }
         </div>
         <button data-edit="${index}" class="add-form-button-three ">${item.isEdit ? "Сохранить" : "Редактировать"
-        }</button>
+        }</button> <br>
+         <button data-id="${item.id}" id="form-button-two" class="add-form-button-two">Удалить</button>
         <div class="comment-footer">
           <div class="likes">
             <span class="likes-counter">${item.likes}</span>
@@ -36,9 +37,12 @@ export const renderChangingMarkup = () => {
         }" data-index="${index}"></button>
           </div>
         </div>
+        
+        
       </li>
     </ul>`;
     })
+
     .join("");
 
 
@@ -66,7 +70,7 @@ export const renderChangingMarkup = () => {
       ></textarea>
       <div class="add-form-row">
         <button id="form-button" class="add-form-button">Написать</button>
-        <button id="form-button-two" class="add-form-button-two">Удалить</button>
+        
       </div>
     </div>
   </div>`;
@@ -87,7 +91,7 @@ export const renderChangingMarkup = () => {
   const inputName = document.getElementById("form-name");
   const inputComments = document.getElementById("form-text");
   const button = document.getElementById("form-button");
-  const buttonTwo = document.getElementById("form-button-two");
+  const buttonTwo = document.querySelectorAll("#form-button-two");
 
   button.addEventListener("click", () => {
     console.log(1);
@@ -105,12 +109,19 @@ export const renderChangingMarkup = () => {
 
 
   });
+  for (const buttonTwos of buttonTwo) {
+    buttonTwos.addEventListener("click", (event) => {
+      event.stopPropagation()
 
-  buttonTwo.addEventListener("click", () => {
-    arrayOfComments.splice(arrayOfComments.length - 1, 1);
-    renderChangingMarkup();
+      const id = buttonTwos.dataset.id;
+      console.log("🚀 ~ file: render.js:113 ~ buttonTwo.addEventListener ~ id:", id)
 
-  });
+      deleteTodo({ id }).then(() => {
+        addedComments();
+      });
+    });
+  }
+
 
 
   inputComments.addEventListener("input", disablingButton);

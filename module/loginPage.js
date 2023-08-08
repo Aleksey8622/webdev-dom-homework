@@ -1,7 +1,7 @@
-import { login, userName, userToken } from "./api.js";
+import { login, userName, userToken, addedComments, userId } from "./api.js";
+import { startPage } from "./main.js";
 
-
-export function renderLogin({ addedComments }) {
+export function renderLogin() {
   const appElement = document.querySelector("#app");
   const loginHtml = `<div class="container">
     <div class="add-form">
@@ -21,12 +21,21 @@ export function renderLogin({ addedComments }) {
       <div class="add-form-row">
         <button id="login-button" class="add-form-button">Войти</button>
       </div>
-    </div>
+    </div><br>
+    <div>Что бы вернуться на предыдущую страницу нажмите вот <a id="linkBack" href="#">тут</a></div>
+      </div>
   </div>`;
+
+
 
   appElement.innerHTML = loginHtml;
   console.log(appElement.innerHTML);
 
+
+
+  document.querySelector("#linkBack").addEventListener("click", () => {
+    startPage()
+  })
   const lohinInputElement = document.querySelector("#login-input");
   const loginPasswordElement = document.querySelector("#login-password");
   const loginButtonElement = document.querySelector("#login-button");
@@ -43,6 +52,9 @@ export function renderLogin({ addedComments }) {
         console.log(responseData.user.token);
         userName(responseData.user.name);
         console.log(responseData.user.name);
+        userId(responseData.user._id)
+
+
       })
       .then(() => {
         addedComments();

@@ -2,14 +2,13 @@ import { currentDate } from "./helpers.js";
 
 import { renderChangingMarkup } from "./render.js";
 
-
 const textElementsLoad = document.querySelector(".text-load");
 const inputName = document.getElementById("form-name");
 const inputComments = document.getElementById("form-text");
 const button = document.querySelector(".add-form-button");
 const loadingElements = document.querySelector(".loading-add");
 
-const url = "https://wedev-api.sky.pro/api/v2/Aleksey-Rudnev/comments";
+const url = "https://wedev-api.sky.pro/api/v2/Aleksey-Rudnev/comments/";
 const userUrl = "https://wedev-api.sky.pro/api/user/login";
 
 export let token;
@@ -17,7 +16,15 @@ export function userToken(newToken) {
   token = newToken;
 }
 
+export let id;
+console.log("🚀 ~ file: api.js:20 ~ id:", id)
+export function userId(newId) {
+  id = newId;
+}
+
 export let name;
+console.log("🚀 ~ file: api.js:20 ~ name:", name)
+
 export function userName(newName) {
   name = newName
 }
@@ -60,6 +67,8 @@ export const addedComments = () => {
       return response;
     })
     .then((responseCommets) => {
+
+
       const massComments = responseCommets.comments.map((comment) => {
         return {
           name: comment.author.name,
@@ -68,6 +77,7 @@ export const addedComments = () => {
           likes: comment.likes,
           islover: false,
           isEdit: false,
+          id: comment.id,
         };
       });
 
@@ -76,10 +86,10 @@ export const addedComments = () => {
 
       console.log(arrayOfComments);
     })
-    .catch((error) => {
-      alert("Кажется, у вас сломался интернет");
-      console.error(error);
-    });
+    // .catch((error) => {
+    //   alert("Кажется, у вас сломался интернет");
+    //   console.error(error);
+    // });
 };
 
 // Отдельная функция на POST запрос в API
@@ -110,6 +120,7 @@ export const sedingsServer = () => {
   const formElements = document.getElementById("add-form");
   const inputName = document.getElementById("form-name");
   const inputComments = document.getElementById("form-text");
+  const loadingElements = document.querySelector(".loading-add");
   loadingElements.style.display = "block";
   formElements.style.display = "none";
 
@@ -142,16 +153,17 @@ export const sedingsServer = () => {
       formElements.style.display = "flex";
     })
     .catch((error) => {
-      loadingElements.style.display = "block";
-      formElements.style.display = "none";
+      loadingElements.style.display = "none";
+      formElements.style.display = "flex";
       if (error.message === "Не верный ввод") {
         alert("Имя и комментарий должны быть не короче 3 символов");
       } else if (error.message === "Сломался сервер") {
         addTodoError();
-        // alert("Сервер сломался, попробуй позже")
-      } else {
-        alert("Кажется, у вас сломался интернет, попробуйте позже");
       }
+        // alert("Сервер сломался, попробуй позже")
+      // } else {
+      //   alert("Кажется, у вас сломался интернет, попробуйте позже");
+      // }
     });
 };
 
@@ -189,6 +201,20 @@ export function addTodoError() {
     });
 }
 
+// Функция удаления комментария
+export function deleteTodo({ id }) {
+  console.log("🚀 ~ file: api.js:203 ~ id:", id)
+  return fetch("https://wedev-api.sky.pro/api/v2/Aleksey-Rudnev/comments/" + id, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
+  })
+    .then((response) => {
+      console.log("🚀 ~ file: api.js:210 ~ .then ~ response:", response)
+      return response.json();
+    });
+}
 // Функция login для получения токена для авторизации
 
 export const login = ({ login, password }) => {
@@ -199,6 +225,14 @@ export const login = ({ login, password }) => {
       password,
     }),
   }).then((responseData) => {
-    return responseData.json();
-  });
+    if (responseData.status === 201) {
+      return responseData.json();
+    } else if (responseData.status === 400) {
+      throw new Error("Не верный логин или пароль");
+    }
+  }).catch((error) => {
+    if (error.message === "Не верный логин или пароль") {
+      alert("Введен не правильный логин или пароль!")
+    }
+  })
 };
