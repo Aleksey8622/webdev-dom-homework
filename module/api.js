@@ -86,10 +86,10 @@ export const addedComments = () => {
 
       console.log(arrayOfComments);
     })
-    // .catch((error) => {
-    //   alert("Кажется, у вас сломался интернет");
-    //   console.error(error);
-    // });
+  // .catch((error) => {
+  //   alert("Кажется, у вас сломался интернет");
+  //   console.error(error);
+  // });
 };
 
 // Отдельная функция на POST запрос в API
@@ -160,7 +160,7 @@ export const sedingsServer = () => {
       } else if (error.message === "Сломался сервер") {
         addTodoError();
       }
-        // alert("Сервер сломался, попробуй позже")
+      // alert("Сервер сломался, попробуй позже")
       // } else {
       //   alert("Кажется, у вас сломался интернет, попробуйте позже");
       // }
