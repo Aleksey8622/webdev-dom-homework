@@ -1,6 +1,7 @@
 import { currentDate } from "./helpers.js";
-
+import { now } from "./main.js";
 import { renderChangingMarkup } from "./render.js";
+import { format } from "date-fns";
 
 const textElementsLoad = document.querySelector(".text-load");
 const inputName = document.getElementById("form-name");
@@ -72,7 +73,7 @@ export const addedComments = () => {
       const massComments = responseCommets.comments.map((comment) => {
         return {
           name: comment.author.name,
-          date: currentDate(new Date(comment.date)),
+          date: format(now, 'yyyy-MM-dd hh.mm.ss'),
           text: comment.text,
           likes: comment.likes,
           islover: false,

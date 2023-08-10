@@ -2,12 +2,14 @@
 
 import { renderStart } from "./renderStart.js";
 import { currentDate } from "./helpers.js";
+import { format } from "date-fns";
 
 const textElementsLoad = document.querySelector(".text-load");
 textElementsLoad.style.display = "block";
 
 // renderLogin({ addedComments });
 // renderChangingMarkup({})
+export const now = new Date()
 const url = "https://wedev-api.sky.pro/api/v2/Aleksey-Rudnev/comments";
 export const startPage = () => {
     return fetch(url, {
@@ -24,7 +26,7 @@ export const startPage = () => {
             const massComments = responseCommets.comments.map((comment) => {
                 return {
                     name: comment.author.name,
-                    date: currentDate(new Date(comment.date)),
+                    date: format(now, 'yyyy-MM-dd hh.mm.ss'),
                     text: comment.text,
                     likes: comment.likes,
                     islover: false,

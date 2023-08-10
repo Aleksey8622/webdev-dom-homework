@@ -1,0 +1,23 @@
+{
+  "name": "comment_feed",
+  "version": "1.0.0",
+  "description": "viewing and adding comments",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack --mode development --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Aleksey8622/webdev-dom-homework"
+  },
+  "author": "Aleksey8622 mail: aleksey.rudnev.ru@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "date-fns": "^2.30.0",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
+  }
+}
