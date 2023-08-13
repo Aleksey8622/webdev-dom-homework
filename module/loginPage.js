@@ -1,6 +1,6 @@
 import { login, userName, userToken, addedComments, userId } from "./api.js";
 import { startPage } from "./main.js";
-
+import _ from "lodash"
 export function renderLogin() {
   const appElement = document.querySelector("#app");
   const loginHtml = `<div class="container">
@@ -44,8 +44,8 @@ export function renderLogin() {
 
   function clickButton() {
     login({
-      login: lohinInputElement.value,
-      password: loginPasswordElement.value,
+      login: _.toLower(lohinInputElement.value),
+      password: _.toLower(loginPasswordElement.value),
     })
       .then((responseData) => {
         userToken(responseData.user.token);
